@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>3301 // PROJECT_SIYA</title>
+    <style>
+        :root {
+            --neon-green: #39ff14;
+            --neon-pink: #ff007f;
+            --main-glow: 0 0 15px #39ff14, 0 0 30px #39ff14;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background: #000; overflow: hidden;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        /* --- GLOWING PARTICLES --- */
+        .butterfly, .heart {
+            position: absolute; z-index: 1; pointer-events: none;
+            animation: move linear infinite; filter: drop-shadow(0 0 8px currentColor);
+        }
+
+        @keyframes move {
+            0% { transform: translate(0, 110vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translate(var(--x-end), -10vh) rotate(360deg); opacity: 0; }
+        }
+
+        .crt-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 3px; z-index: 100; pointer-events: none;
+        }
+
+        .container {
+            position: relative; z-index: 50; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; height: 100vh; padding: 15px;
+        }
+
+        .terminal-box {
+            width: 100%; max-width: 400px; background: rgba(0, 20, 0, 0.9);
+            border: 2px solid var(--neon-green); border-radius: 12px;
+            padding: 20px; box-shadow: var(--main-glow); text-align: center;
+            box-sizing: border-box;
+        }
+
+        .header {
+            color: var(--neon-green); font-size: 1rem; font-weight: bold;
+            border-bottom: 1px solid var(--neon-green); padding-bottom: 10px;
+            margin-bottom: 15px; text-shadow: var(--main-glow);
+        }
+
+        #log {
+            color: var(--neon-green); text-align: left; font-size: 0.8rem;
+            line-height: 1.4; margin-bottom: 15px; height: 90px; overflow-y: auto;
+        }
+
+        /* --- MORSE HINT INSIDE CARD --- */
+        .hint-section {
+            background: rgba(57, 255, 20, 0.05);
+            border: 1px dashed var(--neon-green);
+            padding: 10px; margin-bottom: 20px; border-radius: 5px;
+        }
+
+        .hint-label { color: var(--neon-green); font-size: 0.7rem; font-weight: bold; margin-bottom: 5px; display: block; }
+
+        .morse-code {
+            color: var(--neon-green); font-size: 0.7rem; letter-spacing: 2px;
+            word-break: break-all; text-shadow: 0 0 5px var(--neon-green);
+        }
+
+        .input-group { width: 100%; }
+
+        #passInput {
+            width: 90%; background: transparent; border: 1px solid var(--neon-pink);
+            color: #fff; padding: 12px; font-family: inherit; font-size: 1.2rem;
+            text-align: center; outline: none; box-shadow: 0 0 10px var(--neon-pink);
+            border-radius: 5px; margin-bottom: 15px;
+        }
+
+        #confirmBtn {
+            background: transparent; color: var(--neon-green);
+            border: 1px solid var(--neon-green); padding: 12px 35px;
+            font-family: inherit; font-weight: bold; font-size: 1rem;
+            cursor: pointer; border-radius: 5px; transition: 0.3s;
+            box-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
+            text-transform: uppercase; width: 90%;
+        }
+
+        #confirmBtn:active { background: var(--neon-green); color: #000; }
+
+        #error-msg { color: #ff0000; font-size: 0.75rem; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="crt-overlay"></div>
+
+    <div class="container">
+        <div class="terminal-box">
+            <div class="header">> 3301 // PRIVATE_KEY</div>
+            
+            <div id="log">
+[SYSTEM] INITIATING MARRIGE PROTOCOL...
+[STATUS] TARGET "WIFE ?" DETECTED.
+[INFO] Decrypt the hint to proceed.
+------------------------------------
+            </div>
+
+            <div class="hint-section">
+                <span class="hint-label">HINT:</span>
+                <div class="morse-code">--- ..- .-. / .- -. -. .. ...- . .-. ... .- .-. -.--</div>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="passInput" placeholder="DDMM" inputmode="numeric" maxlength="4" autocomplete="off">
+                <br>
+                <button id="confirmBtn">UPLOAD DAT</button>
+                <div id="error-msg">!! AUTHENTICATION FAILED !!</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const symbols = ['🦋', '💚', '🦋', '💖', '✨'];
+        const colors = ['#39ff14', '#ff007f', '#00e5ff'];
+
+        function createParticle() {
+            const p = document.createElement('div');
+            p.className = Math.random() > 0.5 ? 'heart' : 'butterfly';
+            p.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+            p.style.color = colors[Math.floor(Math.random() * colors.length)];
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.fontSize = (Math.random() * 20 + 20) + 'px';
+            p.style.setProperty('--x-end', (Math.random() - 0.5) * 300 + 'px');
+            p.style.animationDuration = (Math.random() * 5 + 4) + 's';
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 9000);
+        }
+
+        setInterval(createParticle, 400);
+
+        const input = document.getElementById('passInput');
+        const btn = document.getElementById('confirmBtn');
+        const error = document.getElementById('error-msg');
+        const log = document.getElementById('log');
+        const PASS = "3004";
+
+        function checkPass() {
+            const val = input.value.trim();
+            if (val === PASS) {
+                error.style.display = 'none';
+                log.innerHTML = `[SUCCESS] DATA UPLOADED.<br>[SYSTEM] REDIRECTING TO NEXT TASK`;
+                input.disabled = true;
+                btn.disabled = true;
+                btn.innerText = "ACCESS GRANTED - WIFE ";
+                setTimeout(() => {
+                    window.location.href = "https://www.instagram.com/p/DSt3QkzjI7W/?igsh=djQ3dTg1MHFveG5v";
+                }, 1500);
+            } else {
+                error.style.display = 'block';
+                input.value = "";
+            }
+        }
+
+        btn.addEventListener('click', checkPass);
+        input.addEventListener('keypress', (e) => { if (e.key === 'Enter') checkPass(); });
+        document.body.addEventListener('click', () => { if(!input.disabled) input.focus(); });
+    </script>
+</body>
+</html>
